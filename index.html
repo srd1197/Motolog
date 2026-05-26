@@ -145,6 +145,20 @@
   .fav-btn:hover{border-color:var(--orange2);color:var(--orange2);}
   .re-fav{font-size:0.75rem;color:var(--orange2);margin-left:0.4rem;}
 
+  /* ROUTE PRESETS */
+  .route-presets{margin-top:0.5rem;}
+  .preset-chips{display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.4rem;}
+  .route-chip{background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'Barlow Condensed',sans-serif;font-size:0.78rem;letter-spacing:0.5px;padding:0.3rem 0.8rem;border-radius:20px;cursor:pointer;transition:all 0.15s;}
+  .route-chip:hover{border-color:var(--orange);color:var(--orange);}
+  .route-chip.del-mode{border-color:var(--red);color:var(--red);}
+  .preset-add-row{display:flex;gap:0.4rem;margin-top:0.4rem;}
+  .preset-add-row input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Barlow',sans-serif;font-size:0.82rem;padding:0.35rem 0.6rem;outline:none;}
+  .preset-add-row input:focus{border-color:var(--orange);}
+  .preset-save-btn{background:var(--orange);color:white;border:none;border-radius:6px;padding:0.35rem 0.75rem;font-family:'Barlow Condensed',sans-serif;font-size:0.82rem;letter-spacing:1px;cursor:pointer;white-space:nowrap;}
+
+  /* FUEL PPG */
+  .fuel-ppg{font-size:0.72rem;color:var(--orange);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;margin-top:0.2rem;min-height:1rem;}
+
   /* GOOGLE SHEETS PANEL */
   .connect-card{background:var(--surface);border:1px solid rgba(58,134,255,0.3);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;}
   .connect-card h3{font-family:'Barlow Condensed',sans-serif;font-size:0.85rem;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:0.75rem;}
@@ -177,9 +191,39 @@
 
   <header>
     <div class="logo">
-      <span class="logo-emoji">🏍️</span>
-      <div class="logo-main">Moto<span>Log</span></div>
-      <div class="logo-sub">Ride Tracker</div>
+      <svg width="160" height="100" viewBox="200 45 280 300" role="img">
+        <title>MotoLog</title>
+        <style>
+          .bg-shield{fill:#1a1a1a;}
+          .bar-fill{fill:#ff6b1a;}
+          .bar-text{fill:#1a1a1a;font-family:'Barlow Condensed',sans-serif;font-weight:900;}
+          .wings{fill:#ff9500;}
+        </style>
+        <path d="M340 45 L480 70 L480 220 C480 290 340 335 340 335 C340 335 200 290 200 220 L200 70 Z" class="bg-shield" stroke="#ff6b1a" stroke-width="4"/>
+        <path d="M340 58 L467 80 L467 218 C467 280 340 320 340 320 C340 320 213 280 213 218 L213 80 Z" fill="none" stroke="#cc5500" stroke-width="2"/>
+        <rect x="222" y="95" width="236" height="48" class="bar-fill"/>
+        <line x1="222" y1="98" x2="458" y2="98" stroke="#cc5500" stroke-width="1.5"/>
+        <line x1="222" y1="140" x2="458" y2="140" stroke="#cc5500" stroke-width="1.5"/>
+        <text x="268" y="128" class="bar-text" font-size="26" letter-spacing="4" text-anchor="middle">MOTO</text>
+        <text x="412" y="128" class="bar-text" font-size="26" letter-spacing="4" text-anchor="middle">LOG</text>
+        <rect x="330" y="95" width="18" height="48" class="bg-shield"/>
+        <text x="339" y="127" fill="#ff6b1a" font-family="'Barlow Condensed',sans-serif" font-weight="900" font-size="24" text-anchor="middle">·</text>
+        <rect x="222" y="248" width="236" height="38" class="bar-fill"/>
+        <line x1="222" y1="251" x2="458" y2="251" stroke="#cc5500" stroke-width="1.5"/>
+        <line x1="222" y1="283" x2="458" y2="283" stroke="#cc5500" stroke-width="1.5"/>
+        <text x="340" y="273" class="bar-text" font-size="20" letter-spacing="5" text-anchor="middle">RIDE LOG</text>
+        <path d="M222 155 C199 148 174 140 154 148 C169 152 187 158 209 165Z" class="wings"/>
+        <path d="M222 163 C197 158 167 155 147 165 C164 166 187 168 214 172Z" class="wings"/>
+        <path d="M222 171 C199 170 171 172 154 183 C171 180 194 176 219 178Z" class="wings"/>
+        <path d="M458 155 C481 148 506 140 526 148 C511 152 493 158 471 165Z" class="wings"/>
+        <path d="M458 163 C483 158 513 155 533 165 C516 166 493 168 466 172Z" class="wings"/>
+        <path d="M458 171 C481 170 509 172 526 183 C509 180 486 176 461 178Z" class="wings"/>
+        <text x="340" y="205" fill="#cc5500" font-size="13" letter-spacing="5" text-anchor="middle" font-family="'Barlow Condensed',sans-serif" font-weight="700">SINCE 2026</text>
+        <path d="M227 93 L222 88 L232 88Z" fill="#ff6b1a"/>
+        <path d="M453 93 L458 88 L448 88Z" fill="#ff6b1a"/>
+        <path d="M227 143 L222 148 L232 148Z" fill="#cc5500"/>
+        <path d="M453 143 L458 148 L448 148Z" fill="#cc5500"/>
+      </svg>
     </div>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;">
       <div class="season-badge">Summer <span id="seasonYear">2026</span></div>
@@ -211,6 +255,14 @@
         <div class="field">
           <label>Bike / Notes on Route</label>
           <input type="text" id="rideRoute" placeholder="e.g. Highway 61 loop">
+          <div class="route-presets">
+            <div class="preset-chips" id="routePresetChips"></div>
+            <div class="preset-add-row">
+              <input type="text" id="routePresetInput" placeholder="Save current route as favorite..."
+                onkeydown="if(event.key==='Enter')saveRoutePreset()">
+              <button class="preset-save-btn" onclick="saveRoutePreset()">+ Save</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -318,11 +370,11 @@
       <div id="fuelStops"></div>
     </div>
 
-    <!-- RESTAURANT STOPS -->
+    <!-- FOOD STOPS -->
     <div class="form-card">
       <div class="stops-header">
-        <div class="slabel" style="margin:0"><span style="font-size:2.8rem;vertical-align:middle;margin-right:0.5rem">🍽️</span>Restaurant Stops</div>
-        <button class="btn-add" onclick="addStop('restaurant')">+ Add Restaurant Stop</button>
+        <div class="slabel" style="margin:0"><span style="font-size:2.8rem;vertical-align:middle;margin-right:0.5rem">🍽️</span>Food Stops</div>
+        <button class="btn-add" onclick="addStop('restaurant')">+ Add Food Stop</button>
       </div>
       <div id="restaurantStops"></div>
     </div>
@@ -337,7 +389,7 @@
     </div>
 
     <!-- SAVE -->
-    <button class="btn-save-ride" id="saveRideBtn" onclick="saveRide()"><span style="font-size:2.8rem;vertical-align:middle;margin-right:0.5rem">🏍️</span> Save Ride <span style="font-size:2.8rem;vertical-align:middle;margin-left:0.5rem">🏍️</span></button>
+    <button class="btn-save-ride" id="saveRideBtn" onclick="saveRide()"><span style="font-size:2.8rem;vertical-align:middle;margin-right:0.5rem">💥</span> Save Ride <span style="font-size:2.8rem;vertical-align:middle;margin-left:0.5rem">💥</span></button>
 
   </div>
 
@@ -398,7 +450,7 @@
 
     <div class="slabel" style="margin-bottom:0.75rem">Spending Breakdown</div>
     <div class="spend-row"><span class="spend-label">⛽ Fuel</span><span class="spend-val" style="color:var(--orange)" id="spendFuel">$0.00</span></div>
-    <div class="spend-row"><span class="spend-label">🍽️ Restaurants</span><span class="spend-val" style="color:var(--green)" id="spendFood">$0.00</span></div>
+    <div class="spend-row"><span class="spend-label">🍽️ Food Stops</span><span class="spend-val" style="color:var(--green)" id="spendFood">$0.00</span></div>
     <div class="spend-row"><span class="spend-label">🛠️ Maintenance (per ride)</span><span class="spend-val" style="color:var(--blue)" id="spendMaint">$0.00</span></div>
     <div class="spend-row"><span class="spend-label" style="color:var(--text);font-weight:500">Variable Total</span><span class="spend-val" style="color:var(--yellow)" id="spendTotal">$0.00</span></div>
 
@@ -764,12 +816,34 @@ function fetchWeatherAuto() {
   showWeatherLoading();
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
-      pos => fetchWeatherByCoords(pos.coords.latitude, pos.coords.longitude),
-      err => fetchWeatherByIP(),
+      pos => {
+        // Save coords for next time
+        localStorage.setItem('ml_last_lat', pos.coords.latitude);
+        localStorage.setItem('ml_last_lon', pos.coords.longitude);
+        fetchWeatherByCoords(pos.coords.latitude, pos.coords.longitude);
+      },
+      err => {
+        // Try saved location first, then IP
+        const lat = localStorage.getItem('ml_last_lat');
+        const lon = localStorage.getItem('ml_last_lon');
+        const city = localStorage.getItem('ml_last_city');
+        if (lat && lon) {
+          fetchWeatherByCoords(parseFloat(lat), parseFloat(lon), city || 'Last Known Location');
+        } else {
+          fetchWeatherByIP();
+        }
+      },
       { timeout: 6000 }
     );
   } else {
-    fetchWeatherByIP();
+    const lat = localStorage.getItem('ml_last_lat');
+    const lon = localStorage.getItem('ml_last_lon');
+    const city = localStorage.getItem('ml_last_city');
+    if (lat && lon) {
+      fetchWeatherByCoords(parseFloat(lat), parseFloat(lon), city || 'Last Known Location');
+    } else {
+      fetchWeatherByIP();
+    }
   }
 }
 
@@ -778,7 +852,7 @@ function fetchWeatherByIP() {
     .then(r => r.json())
     .then(loc => {
       if (loc.latitude && loc.longitude) {
-        fetchWeatherByCoords(loc.latitude, loc.longitude, loc.city + ', ' + loc.region_code);
+        localStorage.setItem('ml_last_lat', loc.latitude); localStorage.setItem('ml_last_lon', loc.longitude); localStorage.setItem('ml_last_city', loc.city + ', ' + loc.region_code); fetchWeatherByCoords(loc.latitude, loc.longitude, loc.city + ', ' + loc.region_code);
       } else { showWeatherError(); }
     })
     .catch(() => showWeatherError());
@@ -809,7 +883,7 @@ function fetchWeatherByCity() {
     .then(data => {
       if (!data.results?.length) { showWeatherError(); return; }
       const loc = data.results[0];
-      fetchWeatherByCoords(loc.latitude, loc.longitude, loc.name + ', ' + (loc.admin1||''));
+      localStorage.setItem('ml_last_lat', loc.latitude); localStorage.setItem('ml_last_lon', loc.longitude); localStorage.setItem('ml_last_city', loc.name + ', ' + (loc.admin1||'')); fetchWeatherByCoords(loc.latitude, loc.longitude, loc.name + ', ' + (loc.admin1||''));
     })
     .catch(() => showWeatherError());
 }
@@ -933,6 +1007,55 @@ function toggleFavFilter(){
   renderHistory();
 }
 
+// ── ROUTE PRESETS ─────────────────────────────
+let routePresets = JSON.parse(localStorage.getItem('ml_route_presets') || '["Stockholm Loop"]');
+
+function renderRoutePresets() {
+  const el = document.getElementById('routePresetChips');
+  if (!el) return;
+  if (!routePresets.length) { el.innerHTML = ''; return; }
+  el.innerHTML = routePresets.map((r, i) => `
+    <span class="route-chip" onclick="useRoutePreset(${i})">${r}
+      <span onclick="event.stopPropagation();deleteRoutePreset(${i})"
+        style="margin-left:0.3rem;color:#aaa;font-size:0.8rem">✕</span>
+    </span>`).join('');
+}
+
+function useRoutePreset(i) {
+  document.getElementById('rideRoute').value = routePresets[i];
+}
+
+function saveRoutePreset() {
+  const input = document.getElementById('routePresetInput');
+  const val = input.value.trim() || document.getElementById('rideRoute').value.trim();
+  if (!val) { toast('Enter a route name first', 'err'); return; }
+  if (routePresets.includes(val)) { toast('Already saved!', 'warn'); return; }
+  routePresets.push(val);
+  localStorage.setItem('ml_route_presets', JSON.stringify(routePresets));
+  input.value = '';
+  renderRoutePresets();
+  toast('Route saved ✓', 'ok');
+}
+
+function deleteRoutePreset(i) {
+  routePresets.splice(i, 1);
+  localStorage.setItem('ml_route_presets', JSON.stringify(routePresets));
+  renderRoutePresets();
+}
+
+// ── FUEL PRICE PER GALLON ─────────────────────
+function calcFuelPPG(n) {
+  const gal  = parseFloat(document.getElementById('fuelGal'+n)?.value) || 0;
+  const cost = parseFloat(document.getElementById('fuelCost'+n)?.value) || 0;
+  const el   = document.getElementById('fuelPPG'+n);
+  if (!el) return;
+  if (gal > 0 && cost > 0) {
+    el.textContent = '$' + (cost / gal).toFixed(3) + '/gal';
+  } else {
+    el.textContent = '';
+  }
+}
+
 // ── BOOT ──────────────────────────────────────
 document.getElementById('seasonYear').textContent = localStorage.getItem(MK.year) || new Date().getFullYear();
 document.getElementById('rideDate').value = today();
@@ -940,6 +1063,7 @@ applyMlConn();
 renderHistory();
 renderSeason();
 renderStars();
+renderRoutePresets();
 updateOdometerDisplay();
 updateFixedCostsDisplay();
 autoFillStartMiles();
@@ -995,15 +1119,17 @@ function addStop(type){
       <button class="stop-rm" onclick="this.parentElement.remove()">✕</button>
       <div class="fgrid three">
         <div class="field"><label>Location</label><input type="text" id="fuelLoc${n}" placeholder="City or station name"></div>
-        <div class="field"><label>Gallons</label><input type="number" id="fuelGal${n}" placeholder="e.g. 4.2" step="0.01"></div>
-        <div class="field"><label>Cost ($)</label><input type="number" id="fuelCost${n}" placeholder="e.g. 18.50" step="0.01"></div>
+        <div class="field"><label>Gallons</label><input type="number" id="fuelGal${n}" placeholder="e.g. 4.2" step="0.01" oninput="calcFuelPPG(${n})"></div>
+        <div class="field"><label>Cost ($)</label><input type="number" id="fuelCost${n}" placeholder="e.g. 18.50" step="0.01" oninput="calcFuelPPG(${n})">
+          <div class="fuel-ppg" id="fuelPPG${n}"></div>
+        </div>
       </div>`;
   } else if(type==='restaurant'){
     div.innerHTML=`
-      <div class="stop-type restaurant">🍽️ Restaurant Stop ${n}</div>
+      <div class="stop-type restaurant">🍽️ Food Stop ${n}</div>
       <button class="stop-rm" onclick="this.parentElement.remove()">✕</button>
       <div class="fgrid">
-        <div class="field"><label>Restaurant Name</label><input type="text" id="restName${n}" placeholder="Name of place"></div>
+        <div class="field"><label>Place Name</label><input type="text" id="restName${n}" placeholder="Name of place"></div>
         <div class="field"><label>Cost ($)</label><input type="number" id="restCost${n}" placeholder="e.g. 24.00" step="0.01"></div>
       </div>
       <div class="field full"><label>Food Notes</label><input type="text" id="restNotes${n}" placeholder="What did you eat? Was it good?"></div>`;
@@ -1052,7 +1178,7 @@ function saveRide(){
     if(loc||cost) fuelStops.push({location:loc, gallons:gal, cost});
   });
 
-  // Collect restaurant stops
+  // Collect food stops
   const restStops=[];
   document.querySelectorAll('[id^="restName"]').forEach(el=>{
     const n=el.id.replace('restName','');
@@ -1095,7 +1221,7 @@ function saveRide(){
   const safetyReset = setTimeout(()=>{
     if(btn.disabled){
       btn.disabled=false;
-      btn.innerHTML='<span style="font-size:2.8rem;vertical-align:middle;margin-right:0.5rem">🏍️</span> Save Ride <span style="font-size:2.8rem;vertical-align:middle;margin-left:0.5rem">🏍️</span>';
+      btn.innerHTML='<span style="font-size:2.8rem;vertical-align:middle;margin-right:0.5rem">💥</span> Save Ride <span style="font-size:2.8rem;vertical-align:middle;margin-left:0.5rem">💥</span>';
     }
   }, 8000);
 
@@ -1147,7 +1273,7 @@ function finishSave(ride,btn){
   localStorage.setItem(MK.rides,JSON.stringify(rides));
   renderHistory(); renderSeason(); updateOdometerDisplay();
   resetRideForm();
-  btn.disabled=false; btn.textContent='🏍️ Save Ride';
+  btn.disabled=false; btn.textContent='🏍️ Save Ride 💥';
   if(ride.synced)      toast('Ride saved & synced to Google Sheets!','ok');
   else if(mlUrl)       toast('Ride saved locally — check Sheets shortly.','warn');
   else                 toast('Ride saved! Connect Google Sheets in Settings to sync.','warn');
@@ -1292,7 +1418,7 @@ function renderSeason(){
 // ── CSV EXPORT ────────────────────────────────
 function exportCSV(){
   if(!rides.length){toast('No rides to export!','err');return;}
-  const h=['Date','Route','Start Miles','End Miles','Miles','Fuel Stops','Fuel Cost','Restaurant Stops','Food Cost','Maintenance','Maint Cost','Total Spend','Notes'];
+  const h=['Date','Route','Start Miles','End Miles','Miles','Fuel Stops','Fuel Cost','Food Stops','Food Cost','Maintenance','Maint Cost','Total Spend','Notes'];
   const r=rides.map(r=>[
     r.date, '"'+(r.route||'').replace(/"/g,'""')+'"',
     r.startMiles||'',r.endMiles||'',r.miles||0,
