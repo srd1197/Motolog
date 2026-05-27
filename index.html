@@ -255,13 +255,12 @@
         <div class="field">
           <label>Bike / Notes on Route</label>
           <input type="text" id="rideRoute" placeholder="e.g. Highway 61 loop">
-          <div class="route-presets">
-            <div class="preset-chips" id="routePresetChips"></div>
-            <div class="preset-add-row">
-              <input type="text" id="routePresetInput" placeholder="Save current route as favorite..."
-                onkeydown="if(event.key==='Enter')saveRoutePreset()">
-              <button class="preset-save-btn" onclick="saveRoutePreset()">+ Save</button>
-            </div>
+          <div id="favRoutesWrap" style="margin-top:0.5rem;display:none;">
+            <select id="favRoutesSelect"
+              style="width:100%;background:var(--surface2);border:1px solid var(--orange);color:var(--text);font-family:'Barlow',sans-serif;font-size:0.88rem;padding:0.5rem 0.75rem;border-radius:8px;cursor:pointer;outline:none;"
+              onchange="pickFavRoute()">
+              <option value="">⭐ Favorite Rides — tap to choose</option>
+            </select>
           </div>
         </div>
       </div>
@@ -350,10 +349,35 @@
             <span id="favIcon">☆</span> <span id="favLabel">Mark as Favorite</span>
           </button>
         </div>
-        <div class="field">
-          <label>🗺 Google Maps Route URL</label>
-          <input type="url" id="rideMapUrl" placeholder="Paste Maps link here">
+      </div>
+
+      <!-- ROUTE BUILDER -->
+      <div class="form-card" style="margin-top:0.75rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+          <div class="slabel" style="margin:0">🗺 Route Builder</div>
+          <span style="font-size:0.65rem;color:var(--muted);">Builds a Maps link automatically</span>
         </div>
+        <!-- Start -->
+        <div class="field" style="margin-bottom:0.5rem;">
+          <label>📍 Start</label>
+          <div style="display:flex;gap:0.4rem;">
+            <input type="text" id="routeStart" placeholder="e.g. Burnsville, MN" style="flex:1;">
+            <button onclick="useHomeAsStart()" style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:0 0.7rem;cursor:pointer;font-size:0.78rem;white-space:nowrap;">🏠 Home</button>
+          </div>
+        </div>
+        <!-- Stops -->
+        <div id="routeStopsList"></div>
+        <button onclick="addRouteStop()" style="width:100%;margin-bottom:0.5rem;padding:0.4rem;background:none;border:1px dashed var(--border);color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:0.78rem;letter-spacing:1px;border-radius:7px;cursor:pointer;">+ Add Stop</button>
+        <!-- End -->
+        <div class="field" style="margin-bottom:0.5rem;">
+          <label>🏁 End</label>
+          <div style="display:flex;gap:0.4rem;">
+            <input type="text" id="routeEnd" placeholder="e.g. Burnsville, MN" style="flex:1;">
+            <button onclick="useHomeAsEnd()" style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:0 0.7rem;cursor:pointer;font-size:0.78rem;white-space:nowrap;">🏠 Home</button>
+          </div>
+        </div>
+        <!-- Preview -->
+        <div id="mapsLinkPreview" style="font-size:0.72rem;color:var(--orange);margin-top:0.4rem;min-height:1rem;"></div>
       </div>
       <div class="field full">
         <label>Ride Notes</label>
@@ -975,6 +999,7 @@ let isFavorite = false;
 function toggleFavorite(){
   isFavorite = !isFavorite;
   renderFavBtn();
+  renderFavRoutesDropdown();
 }
 
 function renderFavBtn(){
@@ -1007,40 +1032,143 @@ function toggleFavFilter(){
   renderHistory();
 }
 
-// ── ROUTE PRESETS ─────────────────────────────
-let routePresets = JSON.parse(localStorage.getItem('ml_route_presets') || '["Stockholm Loop"]');
+// ── ROUTE BUILDER ─────────────────────────────
+let routeStopCount = 0;
 
-function renderRoutePresets() {
-  const el = document.getElementById('routePresetChips');
-  if (!el) return;
-  if (!routePresets.length) { el.innerHTML = ''; return; }
-  el.innerHTML = routePresets.map((r, i) => `
-    <span class="route-chip" onclick="useRoutePreset(${i})">${r}
-      <span onclick="event.stopPropagation();deleteRoutePreset(${i})"
-        style="margin-left:0.3rem;color:#aaa;font-size:0.8rem">✕</span>
-    </span>`).join('');
+function addRouteStop() {
+  routeStopCount++;
+  const n = routeStopCount;
+  const el = document.getElementById('routeStopsList');
+  const div = document.createElement('div');
+  div.id = 'routeStopWrap' + n;
+  div.style.cssText = 'display:flex;gap:0.4rem;margin-bottom:0.5rem;align-items:center;';
+  div.innerHTML = `
+    <input type="text" id="routeStop${n}" placeholder="City or landmark"
+      style="flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'Barlow',sans-serif;font-size:0.88rem;padding:0.45rem 0.6rem;border-radius:7px;outline:none;">
+    <button onclick="removeRouteStop(${n})"
+      style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:0 0.6rem;height:36px;cursor:pointer;font-size:0.9rem;">✕</button>`;
+  el.appendChild(div);
 }
 
-function useRoutePreset(i) {
-  document.getElementById('rideRoute').value = routePresets[i];
+function removeRouteStop(n) {
+  const el = document.getElementById('routeStopWrap' + n);
+  if (el) el.remove();
 }
 
-function saveRoutePreset() {
-  const input = document.getElementById('routePresetInput');
-  const val = input.value.trim() || document.getElementById('rideRoute').value.trim();
-  if (!val) { toast('Enter a route name first', 'err'); return; }
-  if (routePresets.includes(val)) { toast('Already saved!', 'warn'); return; }
-  routePresets.push(val);
-  localStorage.setItem('ml_route_presets', JSON.stringify(routePresets));
-  input.value = '';
-  renderRoutePresets();
-  toast('Route saved ✓', 'ok');
+function useHomeAsStart() {
+  const home = localStorage.getItem('ml_home_location') || '';
+  if (home) {
+    document.getElementById('routeStart').value = home;
+  } else {
+    const val = prompt('Enter your home city/address to save it:');
+    if (val) {
+      localStorage.setItem('ml_home_location', val.trim());
+      document.getElementById('routeStart').value = val.trim();
+    }
+  }
 }
 
-function deleteRoutePreset(i) {
-  routePresets.splice(i, 1);
-  localStorage.setItem('ml_route_presets', JSON.stringify(routePresets));
-  renderRoutePresets();
+function useHomeAsEnd() {
+  const home = localStorage.getItem('ml_home_location') || '';
+  if (home) {
+    document.getElementById('routeEnd').value = home;
+  } else {
+    const val = prompt('Enter your home city/address to save it:');
+    if (val) {
+      localStorage.setItem('ml_home_location', val.trim());
+      document.getElementById('routeEnd').value = val.trim();
+    }
+  }
+}
+
+function buildMapsUrl() {
+  const start = document.getElementById('routeStart').value.trim();
+  const end   = document.getElementById('routeEnd').value.trim();
+  const stops = [];
+  document.querySelectorAll('[id^="routeStop"]').forEach(el => {
+    if (el.value.trim()) stops.push(el.value.trim());
+  });
+
+  if (!start && !end && !stops.length) return '';
+
+  // Build Google Maps directions URL
+  const waypoints = stops.map(s => encodeURIComponent(s)).join('/');
+  const origin = encodeURIComponent(start || stops[0] || end);
+  const destination = encodeURIComponent(end || stops[stops.length-1] || start);
+  const mid = stops.length ? '/' + waypoints : '';
+
+  return `https://www.google.com/maps/dir/${origin}${mid}/${destination}`;
+}
+
+function getRouteDescription() {
+  const start = document.getElementById('routeStart').value.trim();
+  const end   = document.getElementById('routeEnd').value.trim();
+  const stops = [];
+  document.querySelectorAll('[id^="routeStop"]').forEach(el => {
+    if (el.value.trim()) stops.push(el.value.trim());
+  });
+  const all = [start, ...stops, end].filter(Boolean);
+  return all.join(' → ');
+}
+
+function clearRouteBuilder() {
+  document.getElementById('routeStart').value = '';
+  document.getElementById('routeEnd').value = '';
+  document.getElementById('routeStopsList').innerHTML = '';
+  document.getElementById('mapsLinkPreview').textContent = '';
+  routeStopCount = 0;
+  // Pre-fill home if saved
+  const home = localStorage.getItem('ml_home_location') || '';
+  if (home) {
+    document.getElementById('routeStart').value = home;
+    document.getElementById('routeEnd').value = home;
+  }
+}
+
+// Auto-fill home on load
+window.addEventListener('DOMContentLoaded', () => {
+  const home = localStorage.getItem('ml_home_location') || '';
+  if (home) {
+    const s = document.getElementById('routeStart');
+    const e = document.getElementById('routeEnd');
+    if (s) s.value = home;
+    if (e) e.value = home;
+  }
+});
+// Populated from rides marked as favorite (isFavorite = true)
+// Called on boot and after every save
+
+function renderFavRoutesDropdown() {
+  const favRides = rides.filter(r => r.favorite && r.route);
+  // Deduplicate by route name
+  const seen = new Set();
+  const unique = favRides.filter(r => {
+    if (seen.has(r.route)) return false;
+    seen.add(r.route);
+    return true;
+  });
+
+  const wrap = document.getElementById('favRoutesWrap');
+  const sel  = document.getElementById('favRoutesSelect');
+  if (!wrap || !sel) return;
+
+  if (!unique.length) {
+    wrap.style.display = 'none';
+    return;
+  }
+
+  wrap.style.display = 'block';
+  sel.innerHTML = '<option value="">⭐ Favorite Rides — tap to choose</option>' +
+    unique.map(r => `<option value="${r.route.replace(/"/g,'&quot;')}">${r.route}</option>`).join('');
+}
+
+function pickFavRoute() {
+  const val = document.getElementById('favRoutesSelect').value;
+  if (val) {
+    document.getElementById('rideRoute').value = val;
+    document.getElementById('favRoutesSelect').value = '';
+    toast('Route filled in: ' + val, 'ok');
+  }
 }
 
 // ── FUEL PRICE PER GALLON ─────────────────────
@@ -1063,7 +1191,7 @@ applyMlConn();
 renderHistory();
 renderSeason();
 renderStars();
-renderRoutePresets();
+renderFavRoutesDropdown();
 updateOdometerDisplay();
 updateFixedCostsDisplay();
 autoFillStartMiles();
@@ -1151,11 +1279,12 @@ function saveRide(){
   const startMi   = parseFloat(document.getElementById('startMiles').value)||0;
   const endMi     = parseFloat(document.getElementById('endMiles').value)||0;
   const miles     = endMi - startMi;
-  const route     = document.getElementById('rideRoute').value.trim();
+  const route     = document.getElementById('rideRoute').value.trim() || routeDesc;
   const notes     = document.getElementById('rideNotes').value.trim();
   const weather   = document.getElementById('rideWeather').value;
   const temp      = document.getElementById('rideTemp').value ? document.getElementById('rideTemp').value + '°F' : '';
-  const mapUrl    = document.getElementById('rideMapUrl').value.trim();
+  const mapUrl    = buildMapsUrl();
+  const routeDesc = getRouteDescription();
   const rating    = currentRating;
 
   if(!date){ toast('Please pick a date!','err'); return; }
@@ -1272,6 +1401,7 @@ function finishSave(ride,btn){
   rides.unshift(ride);
   localStorage.setItem(MK.rides,JSON.stringify(rides));
   renderHistory(); renderSeason(); updateOdometerDisplay();
+  renderFavRoutesDropdown();
   resetRideForm();
   btn.disabled=false; btn.textContent='🏍️ Save Ride 💥';
   if(ride.synced)      toast('Ride saved & synced to Google Sheets!','ok');
@@ -1283,11 +1413,11 @@ function finishSave(ride,btn){
 function resetRideForm(){
   document.getElementById('rideDate').value=today();
   document.getElementById('rideRoute').value='';
+  clearRouteBuilder();
   document.getElementById('endMiles').value='';
   document.getElementById('rideNotes').value='';
   document.getElementById('rideWeather').value='';
   document.getElementById('rideTemp').value='';
-  document.getElementById('rideMapUrl').value='';
   document.getElementById('milesDisplay').textContent='—';
   currentRating=0; isFavorite=false;
   renderStars();
